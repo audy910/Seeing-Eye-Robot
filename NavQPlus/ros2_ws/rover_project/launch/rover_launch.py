@@ -8,13 +8,13 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     pkg_share = get_package_share_directory('rover_project')
-    default_shapefile = os.path.join(pkg_share, 'UCR_Centerlines.json')
+    default_geojson = os.path.join(pkg_share, 'UCR_Centerlines.json')
 
     return LaunchDescription([
 
         DeclareLaunchArgument(
-            'shapefile_path',
-            default_value=default_shapefile,
+            'geojson_path',
+            default_value=default_geojson,
             description='Path to UCR_Centerlines.json'
         ),
 
@@ -65,7 +65,7 @@ def generate_launch_description():
             name='path_planner',
             output='screen',
             parameters=[{
-                'shapefile_path': LaunchConfiguration('shapefile_path'),
+                'geojson_path': LaunchConfiguration('geojson_path'),
                 'walk_paths_only': True,       # True = only Walk_Path=Yes (187 of 766, avoids roads)
                 'snap_tolerance_ft': 2.0,      # merge nearby nodes at intersections
                 'max_snap_distance_ft': 500.0, # max dist to snap GPS to network
@@ -118,7 +118,7 @@ def generate_launch_description():
         ),
 
         # Goal sender — listens on /robot_commands and publishes nav/goal
-        # Delayed 5s to give path planner time to load shapefile
+        # Delayed 5s to give path planner time to load GeoJSON
         TimerAction(
             period=5.0,
             actions=[
