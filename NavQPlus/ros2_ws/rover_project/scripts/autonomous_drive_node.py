@@ -73,6 +73,12 @@ class AutonomousDriveNode(Node):
         CMD_BACKWARD_LEFT: CMD_FORWARD_LEFT,
     }
 
+    def trigger_voice(self, phrase: str):
+        msg = String()
+        msg.data = phrase
+        self.voice_pub.publish(msg)
+        self.get_logger().info(f"[VOICE] Triggered: {phrase}")
+
     def send_cmd(self, cmd: int):
         physical = self._INVERT_MAP.get(cmd, cmd) if self.invert_drive else cmd
         
@@ -108,7 +114,7 @@ class AutonomousDriveNode(Node):
         if msg.cliff_detected:
             if not self.cliff_active:
                 self.get_logger().warn("CLIFF! Emergency Stop")
-                #self.trigger_voice("Stop")
+                self.trigger_voice("Stop")
             self.cliff_active = True
             self.last_cliff_time = now
         elif self.cliff_active and (now - self.last_cliff_time) > self.cliff_hold_seconds:
@@ -119,7 +125,7 @@ class AutonomousDriveNode(Node):
             self.send_cmd(CMD_STOP)
             if self.current_state != STATE_CLIFF_STOP:
                 self.set_state(STATE_CLIFF_STOP)
-                #self.trigger_voice("Stop")
+                self.trigger_voice("Stop")
             return
 
         # ── Front sensor invalid ─────────────────────────────────────────────

@@ -31,6 +31,13 @@ class AudioOutputNode(Node):
             10
         )
 
+        self.subscription = self.create_subscription(
+            String,
+            'robot_voice_trigger',
+            self.command_callback,
+            10
+        )
+
         self.get_logger().info("Audio output node ready.")
 
     def load_clips(self):

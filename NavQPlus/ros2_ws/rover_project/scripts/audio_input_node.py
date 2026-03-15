@@ -52,7 +52,7 @@ class AudioInputNode(Node):
         self.audio_queue = queue.Queue(maxsize=10)
         self.last_command = None
         self.last_command_time = 0
-        self.command_cooldown = 2.0
+        self.command_cooldown = 4.0
         try:
             pkg_share = get_package_share_directory('rover_project')
             model = Model(os.path.join(pkg_share, 'models', 'vosk-model'))
